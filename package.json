@@ -7,21 +7,25 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.0",
+    "@neondatabase/serverless": "^1.0.1",
     "dotenv": "^16.5.0",
-    "drizzle-orm": "^0.44.0",
+    "drizzle-orm": "^0.44.5",
+    "postgres": "^3.4.7",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.4.1",
-    "drizzle-kit": "^0.18.1",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",

@@ -1,35 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+type Lead = {
+  id: number;
+  email: string | null;
+  description: string | null;
+  createdAt: string | null;
+};
+
+export default function App() {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [email, setEmail] = useState("");
+  const [desc, setDesc] = useState("");
+
+  async function refresh() {
+    const res = await fetch("/api/leads");
+    const data = await res.json();
+    setLeads(data);
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await fetch("/api/leads", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, description: desc }),
+    });
+    setEmail("");
+    setDesc("");
+    await refresh();
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div
+      style={{
+        maxWidth: 640,
+        margin: "2rem auto",
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      <h1>Leads</h1>
+      <form
+        onSubmit={onSubmit}
+        style={{ display: "flex", gap: 8, marginBottom: 16 }}
+      >
+        <input
+          placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ flex: 1, padding: 8, border: "1px solid #ccc" }}
+        />
+        <input
+          placeholder="description"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          style={{ flex: 2, padding: 8, border: "1px solid #ccc" }}
+        />
+        <button type="submit">Add</button>
+      </form>
 
-export default App
+      <ul style={{ padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+        {leads.map((l) => (
+          <li
+            key={l.id}
+            style={{ border: "1px solid #ddd", padding: 12, borderRadius: 8 }}
+          >
+            <div>
+              <strong>{l.email ?? "(no email)"}</strong>
+            </div>
+            <div style={{ color: "#555" }}>{l.description ?? "-"}</div>
+            <div style={{ fontSize: 12, color: "#888" }}>
+              {l.createdAt ?? ""}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
